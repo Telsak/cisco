@@ -1,0 +1,42 @@
+Vlan1                  unassigned      YES NVRAM  administratively down down    
+Vlan10                 193.10.203.1    YES NVRAM  up                    up      
+Vlan11                 193.10.203.33   YES NVRAM  up                    up      
+Vlan12                 193.10.203.65   YES NVRAM  up                    up      
+Vlan13                 193.10.203.129  YES NVRAM  up                    up      
+Vlan16                 unassigned      YES unset  up                    up      
+Vlan17                 192.168.17.1    YES NVRAM  up                    up      
+Vlan18                 192.168.18.1    YES NVRAM  up                    up      
+Vlan19                 192.168.19.1    YES NVRAM  up                    up      
+Vlan20                 192.168.20.1    YES NVRAM  up                    up      
+Vlan21                 192.168.21.1    YES NVRAM  administratively down down    
+Vlan1                  [administratively down/down]
+    unassigned
+Vlan10                 [up/up]
+    FE80::10
+    2001:6B0:1D:10::1
+Vlan11                 [up/up]
+    FE80::11
+    2001:6B0:1D:11::1
+Vlan12                 [up/up]
+    FE80::7270:8BFF:FECC:1467
+    2001:6B0:1D:12::1
+Vlan13                 [up/up]
+    FE80::13
+    2001:6B0:1D:13::1
+Vlan16                 [up/up]
+    FE80::16
+    2001:6B0:1D:16::1
+Vlan17                 [up/up]
+    FE80::17
+    2001:6B0:1D:17::1
+Vlan18                 [up/up]
+    FE80::7270:8BFF:FECC:1476
+    2001:6B0:1D:18::1
+Vlan19                 [up/up]
+    unassigned
+Vlan20                 [up/up]
+    FE80::20
+    2001:6B0:1D:20::1
+Vlan21                 [administratively down/down]
+    FE80::7270:8BFF:FECC:1468
+    2001:6B0:1D:21::1
