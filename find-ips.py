@@ -1,10 +1,9 @@
 def parse_ipv4(line, if_dict):
-    if "." in line:
+    if "." in line:  # only ipv4 interfaces will have "." in them
         l_status = line.split()[4]
         if "admin" in l_status:
             l_status = "administratively down"
         line = line.split()[:2]
-        
         d_len = len(if_dict)
         if_dict["if"+str(d_len+1)] = {"name": line[0], "ip4-addr": line[1], "if-status": l_status}
 
@@ -21,24 +20,49 @@ def parse_ipv6(file_contents, if_dict):
         # ipv6 or link local address has been set this means we reached a
         # new interface name, so we need to reset some values
         elif line[0] != " " and (ipv6 != "" or llocal != ""):
-            #print("interface: {}\tipv6: {}\tlink-local: {}".format(if_name, ipv6, llocal))
+            # before we reset we send out the interface information we have
+            # to the function that checks it against the dictionary
             from_parse = (if_name + "," + llocal + "," + ipv6)
             check_dictionary(from_parse, if_dict)
             if_name, ipv6, llocal = col1, "", ""
+        # om raden har ett tecken på första plats är det ett interface
+        # och om det inte finns ip eller ll data än..
         elif line[0] != " " and ipv6 == "" and llocal == "":
             if_name = col1
         elif "FE80::" in line.lstrip().split()[0]:
             llocal = col1
         elif ":" in line.lstrip().split()[0]:
-            ipv6 = col1 
+            ipv6 = col1
         
 def check_dictionary(from_parse, if_dict):
     # first check if the entry contains ipv4 or ipv6 information
     if ":" in from_parse:
         # this is an ipv6 entry!
+        if_name = from_parse.split(",")[0]
+        llocal = from_parse.split(",")[1]
+        ipv6 = from_parse.split(",")[2]
         print("ipv6!")
+        # find out if if_name exists in the nested if_dict dictionary
+        # by iterating over if_dict.keys()
+            # yes
+                # count length of dictionary, and add another interface with
+                # len(if_dict)+1
+            # no
+                # travel to if_dict[dict]
+                # add adress-info to dict
     else:
         # this is an ipv4 entry!
+        if_name = from_parse.split(',')[0]
+        ipv4 = from_parse.split(',')[1]
+        if_status = from_parse.split(',')[2]
+        # find out if if_name exists in the nested if_dict dictionary
+        # by iterating over if_dict.keys()
+            # yes
+                # count length of dictionary, and add another interface with
+                # len(if_dict)+1
+            # no
+                # travel to if_dict[dict]
+                # add adress-info to dict
         print("ipv4")
 
 interfaces = {}
