@@ -1,4 +1,5 @@
 def parse_ipv4(line, if_dict):
+    # THIS NEEDS MORE WORK, RIGHT NOW IT ASSUMES IPV4 IS PROCESSED FIRST
     if "." in line:  # only ipv4 interfaces will have "." in them
         l_status = line.split()[4]
         if "admin" in l_status:
@@ -8,6 +9,8 @@ def parse_ipv4(line, if_dict):
         if_dict["if"+str(d_len+1)] = {"name": line[0], "ip4-addr": line[1], "if-status": l_status}
 
 def parse_ipv6(file_contents, if_dict):
+    '''Takes the whole file object with readlines() applied and only pulls IPv6
+       information'''
     if_name = ipv6 = llocal = ""
     for line in file_contents:
         line = line.rstrip()
@@ -16,22 +19,23 @@ def parse_ipv6(file_contents, if_dict):
         # if line has more than 4 columns its ipv4 or text, disregard!
         if split_len > 4 or "unassigned" in line:
             continue
-        # if line begins with a character (before splitting) and either
-        # ipv6 or link local address has been set this means we reached a
-        # new interface name, so we need to reset some values
+        # if line begins with a character (before splitting) and either ipv6 or
+        # link local address has been set this means we reached a new interface
+        # name, so we need to reset some values
         elif line[0] != " " and (ipv6 != "" or llocal != ""):
-            # before we reset we send out the interface information we have
-            # to the function that checks it against the dictionary
+            # before interface reset information is sent to the function that
+            # checks it against the dictionary
             from_parse = (if_name + "," + llocal + "," + ipv6)
             check_dictionary(from_parse, if_dict)
             if_name, ipv6, llocal = col1, "", ""
-        # om raden har ett tecken på första plats är det ett interface
-        # och om det inte finns ip eller ll data än..
+        # if the row has a character at the start and no ipv6 and link-local
+        # data has been seen yet this means it's an interface 
+        # ^^^ VULNERABLE TO GARBAGE DATA ^^^
         elif line[0] != " " and ipv6 == "" and llocal == "":
             if_name = col1
-        elif "FE80::" in line.lstrip().split()[0]:
+        elif "FE80::" in line.lstrip().split()[0]: # link-local == FE80::
             llocal = col1
-        elif ":" in line.lstrip().split()[0]:
+        elif ":" in line.lstrip().split()[0]: # only regular ipv6 left
             ipv6 = col1
         
 def check_dictionary(from_parse, if_dict):
@@ -42,19 +46,24 @@ def check_dictionary(from_parse, if_dict):
         llocal = from_parse.split(",")[1]
         ipv6 = from_parse.split(",")[2]
         print("ipv6!")
-        # find out if if_name exists in the nested if_dict dictionary
-        # by iterating over if_dict.keys()
-            # yes
-                # count length of dictionary, and add another interface with
-                # len(if_dict)+1
-            # no
-                # travel to if_dict[dict]
-                # add adress-info to dict
+        print(len(if_dict))
+        if len(if_dict)) < 1:
+            # create the first nested entry
+        else:
+            # find out if if_name exists in the nested if_dict dictionary
+            # by iterating over if_dict.keys() - does it match?
+                # no
+                    # count length of dictionary, and add another interface with
+                    # len(if_dict)+1
+                # yes
+                    # travel to if_dict[dict]
+                    # add adress-info to dict
     else:
         # this is an ipv4 entry!
         if_name = from_parse.split(',')[0]
         ipv4 = from_parse.split(',')[1]
         if_status = from_parse.split(',')[2]
+        print("ipv4")
         # find out if if_name exists in the nested if_dict dictionary
         # by iterating over if_dict.keys()
             # yes
@@ -63,7 +72,6 @@ def check_dictionary(from_parse, if_dict):
             # no
                 # travel to if_dict[dict]
                 # add adress-info to dict
-        print("ipv4")
 
 interfaces = {}
 
